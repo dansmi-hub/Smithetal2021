@@ -16,7 +16,7 @@ library(parallel)
 
 # Load EPB ----------------------------------------------------------------
 
-nodes <- read.csv("data/EPBweb_Nodes.csv") %>% 
+nodes <- read.csv("data/EPBweb_Nodes__New.csv") %>% 
   clean_names() %>% as_tibble()
 links <- read.csv("data/EPBweb_Links.csv") %>% 
   clean_names() %>%  as_tibble()
