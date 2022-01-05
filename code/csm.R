@@ -13,7 +13,7 @@ library(parallel)
 
 # Load CSM ----------------------------------------------------------------
 
-nodes <- read.csv("data/CSMweb_Nodes.csv") %>% 
+nodes <- read.csv("data/CSMweb_Nodes__New.csv") %>% 
   clean_names() %>% as_tibble()
 links <- read.csv("data/CSMweb_Links.csv") %>% 
   clean_names() %>%  as_tibble()

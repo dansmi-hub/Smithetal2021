@@ -1,0 +1,51 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r, warning=FALSE}
+subset_data = read_csv("data/Subset of master-eid webs-estuary specific-nodes-mcercs w corrected M.csv")
+bsq_node = read_csv("data/BSQweb_Nodes.csv")
+csm_node = read_csv("data/CSMweb_Nodes.csv")
+epb_node = read_csv("data/EPBweb_Nodes.csv")
+
+```
+
+```{r}
+## Write a function quickly to do this
+
+quickfix = function(new_data, old_data, web) {
+  
+  new = filter(new_data, NodeID %in% old_data$NodeID & System == web)
+  
+  x = old_data %>% select(NodeID, `BodySize(g)`)
+  y = new %>% select(NodeID, `M (body size, g)`)
+  
+  xy = left_join(x, y)
+  
+  nodes_new = mutate(xy, `BodySize(g)` = if_else(is.na(`M (body size, g)`), `BodySize(g)`, `M (body size, g)`))
+  
+  old_data$`BodySize(g)` = nodes_new$`BodySize(g)`
+  
+  return(old_data)
+}
+
+```
+
+```{r}
+quickfix(new_data = subset_data, old_data = bsq_node, web = "BSQ") %>% 
+  write_csv("data/BSQweb_Nodes__New.csv")
+quickfix(new_data = subset_data, old_data = csm_node, web = "CSM") %>% 
+  write_csv("data/CSMweb_Nodes__New.csv")
+quickfix(new_data = subset_data, old_data = epb_node, web = "EPB") %>% 
+  write_csv("data/EPBweb_Nodes__New.csv")
+
+```
+
+
+
+

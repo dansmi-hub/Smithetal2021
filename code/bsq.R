@@ -14,7 +14,7 @@ library(pbmcapply)
 
 # Load BSQ ----------------------------------------------------------------
 
-nodes <- read.csv("data/BSQweb_Nodes.csv") %>% 
+nodes <- read.csv("data/BSQweb_Nodes__New.csv") %>% 
   clean_names() %>% as_tibble()
 links <- read.csv("data/BSQweb_Links.csv") %>% 
   clean_names() %>%  as_tibble()
