@@ -10,7 +10,7 @@ imputation_data =
   epb_im = read_csv("results/epb_imputed.csv") %>% mutate(web = "EPB"),
 )
 
-orignal_data =
+original_data =
   bind_rows(
   bsq_og = read_csv("results/bsq_original.csv") %>% mutate(web = "BSQ"),
   csm_og = read_csv("results/csm_original.csv") %>% mutate(web = "CSM"),

@@ -78,4 +78,5 @@ data %>% mutate(interaction = fct_relevel(interaction, c("total", "para", "carn"
   see::theme_lucid() +
   ylim(c(5,20)) + theme(legend.position = "bottom") # + labs(col = "Simulated")
 
-ggsave("plots/Fig2Box.png", width = 297, height = 210, dpi = 300, units = "mm")
+ggsave("plots/Fig2Box.png", width = 297, height = 210, dpi = 300, units = "mm", bg = "white")
+
