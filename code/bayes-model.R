@@ -112,5 +112,5 @@ plot_data %>%
   geom_errorbar(position = position_dodge(width = .75), col = "black", 
                 aes(ymin = .lower, ymax = .upper, width = .5)) +
   facet_grid(~ interaction) +
-  see::theme_modern() +
+  see::theme_lucid() +
   ylim(c(5,20))

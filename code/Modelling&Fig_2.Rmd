@@ -1,0 +1,169 @@
+---
+title: "Sanity Check + Figures"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+### Data Loading
+
+```{r}
+library(tidyverse)
+library(performance)
+library(parameters)
+library(lemon)
+library(see)
+library(MASS)
+
+data = read_rds("results/fluxresults.rds")
+```
+
+
+##### Choosing Model Interactions
+```{r}
+linear_mod_1 = lm(flux ~ system+(interaction*simulated), data = data)
+linear_mod_2 = lm(flux ~ (system*interaction*simulated), data = data)  
+
+anova(linear_mod_1, linear_mod_2)
+
+# Interaction terms are significant so we should use 3-way 
+# interaction of linear_mod_2
+
+```
+
+##### Transforming data 
+
+Boxcox or Log?
+
+```{r}
+
+boxcox = MASS::boxcox(linear_mod_2)
+# Appropriate boxcox here - with new data it is 0.02
+(lambda <- boxcox$x[which.max(boxcox$y)])
+
+# When boxcox = 0 it is equivelant to log transform?. 
+# Any point in Boxcox transform?
+
+```
+##### Boxcox vs Log Model
+
+```{r}
+lm_log = lm(formula = log(flux) ~ (system * interaction * simulated), data = data)
+
+lm_box = lm((formula = (flux^lambda-1)/lambda) ~ system * interaction * simulated, data = data)
+```
+
+##### Use Box-Cox Anyway
+
+```{r}
+summary(lm_box)
+
+# R2 of 0.78 seems okay...
+```
+
+
+```{r}
+parameters::model_parameters(lm_box)
+```
+
+```{r}
+# Residuals are all funky for index below 1500?
+plot(lm_box$residuals)
+```
+
+
+
+##### Plot Original Data
+
+```{r}
+# New Labels
+plot_labs <- c(para = "Parasites", carn = "Carnivory", detr = "Detrivory", herb = "Herbivory", total = "Total")
+
+# Basic plotting
+data %>% 
+  ggplot(aes(x = system, y = lflux, col = simulated)) +
+  geom_point(position = position_jitterdodge(), alpha = 0.05) +
+  facet_grid(~ interaction, labeller = as_labeller(plot_labs))
+```
+
+
+
+##### Add Fitted Data to Boxcox Model
+
+```{r}
+newdata = cbind(data, predict(lm_box, interval = "confidence", level = 0.95))
+
+newdata$bc_transformed_data = (newdata$flux^lambda-1)/lambda
+
+fitted_means = 
+  newdata %>% 
+  group_by(system, interaction, simulated) %>% 
+  summarise(mean_fit = mean(fit))
+
+
+fitted_means %>% 
+  ggplot(aes(x = system, y = mean_fit, col = simulated, group = simulated)) +
+  geom_point(position = position_dodge(width = 1), pch = 21, size = 3) +
+  geom_point(data = newdata, aes(x = system, y = bc_transformed_data, col = simulated), 
+             position = position_jitterdodge(), alpha = 0.05) +
+  facet_grid(~ interaction, labeller = as_labeller(plot_labs))
+
+
+# Fitted values are around the expected values for most trophic 
+# interactions since adding new data and transforming with boxcox lambda 0.02
+
+```
+
+
+
+##### Final Fig 2 Plot
+
+```{r}
+
+# Manually dodgind both lines and points doesn't result in usable graph
+pd = position_dodge(0.4)
+pjd = position_jitterdodge(dodge.width = 0.4)
+
+fitted_means %>% 
+  ggplot(aes(x = system, y = mean_fit, col = simulated, group = simulated)) +
+  geom_point(position = position_dodge(width = 1), pch = 21, size = 3) +
+  geom_point(data = newdata, aes(x = system, y = bc_transformed_data, col = simulated), 
+             position = pjd, alpha = 0.05) +
+  geom_line(data = fitted_means, aes(col = simulated, group = simulated), position = pjd) +
+  facet_grid(~ interaction, labeller = as_labeller(plot_labs)) +
+  ylab(expression(BoxCox~Transformed~Flux~(J.yr^{-1}))) +
+  xlab("Web") +
+  see::theme_lucid() +
+  ylim(c(5,20)) + theme(legend.position = "bottom") # + labs(col = "Simulated")
+```
+
+
+
+
+
+##### Final Plot - geom_pointline()
+```{r}
+
+
+fitted_means %>% 
+  ggplot(aes(x = system, y = mean_fit, col = simulated, group = simulated)) +
+  # geom_point(position = position_dodge(width = 1), pch = 21, size = 3) +
+  geom_point(data = newdata, aes(x = system, y = bc_transformed_data, col = simulated), 
+             position = pjd, alpha = 0.05) +
+  # geom_line(data = fitted_means, aes(col = simulated, group = simulated), position = pjd) +
+  lemon::geom_pointline(position = position_jitterdodge()) +
+  facet_grid(~ interaction, labeller = as_labeller(plot_labs)) +
+  ylab(expression(BoxCox~Transformed~Flux~(J.yr^{-1}))) +
+  xlab("Web") +
+  see::theme_lucid() +
+  ylim(c(5,25)) + theme(legend.position = "bottom") # + labs(col = "Simulated")
+
+
+# ggsave("figure_2_boxcox.png", width = 297, height = 210, dpi = 300, units = "mm", bg = "white")
+
+```
+
+

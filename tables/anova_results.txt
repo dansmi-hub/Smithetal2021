@@ -1,14 +1,14 @@
 Anova Table (Type II tests)
 
 Response: ((flux^lambda - 1)/lambda)
-                              Sum Sq   Df   F value  Pr(>F)    
-system                         292.6    2   49.3821 < 2e-16 ***
-interaction                  23110.6    4 1950.1688 < 2e-16 ***
-simulated                      436.5    1  147.3499 < 2e-16 ***
-system:interaction             496.5    8   20.9504 < 2e-16 ***
-system:simulated               904.1    2  152.5893 < 2e-16 ***
-interaction:simulated          606.9    4   51.2161 < 2e-16 ***
-system:interaction:simulated    59.4    8    2.5055 0.01033 *  
-Residuals                     9521.9 3214                      
+                             Sum Sq   Df  F value  Pr(>F)    
+system                        263.0    2  44.3863 < 2e-16 ***
+interaction                  6376.0    4 538.0380 < 2e-16 ***
+simulated                    2388.7    1 806.2865 < 2e-16 ***
+system:interaction            647.9    8  27.3346 < 2e-16 ***
+system:simulated              904.1    2 152.5893 < 2e-16 ***
+interaction:simulated         606.9    4  51.2161 < 2e-16 ***
+system:interaction:simulated   59.0    8   2.4883 0.01086 *  
+Residuals                    9521.9 3214                     
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
