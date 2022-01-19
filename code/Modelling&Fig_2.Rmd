@@ -159,8 +159,8 @@ fitted_means %>%
   ylab(expression(BoxCox~Transformed~Flux~(J.yr^{-1}))) +
   xlab("Web") +
   see::theme_lucid() +
-  ylim(c(5,25)) + theme(legend.position = "bottom") # + labs(col = "Simulated")
-
+  ylim(c(5,30)) + theme(legend.position = "bottom") + # + labs(col = "Simulated") 
+  ggtitle("Concomittant Links Removed")
 
 # ggsave("figure_2_boxcox.png", width = 297, height = 210, dpi = 300, units = "mm", bg = "white")
 

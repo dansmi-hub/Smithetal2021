@@ -71,5 +71,6 @@ print("Finished EPB!")
 rm(list = ls())
 gc()
 
-
+## Put all results together for plotting / Analysis
+source("code/results-assembly.R")
 

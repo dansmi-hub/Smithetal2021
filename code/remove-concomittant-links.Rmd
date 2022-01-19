@@ -1,0 +1,70 @@
+---
+title: "Remove-Concomittant"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+```{r}
+library(tidyverse)
+library(igraph)
+```
+
+```{r}
+### BSQ Example
+
+## Find concomittant links?
+
+# Predator that eats parasite inside a host.
+# How can we determine this with our data?
+
+# Original links
+bsq = read_csv("data/BSQweb_Links.csv")
+
+# Concomittant links ID by this in dataset
+no_c_bsq = bsq %>% filter(LinkType != "concurrent predation on symbionts")
+
+# Difference in total links?
+nrow(bsq)- nrow(no_c_bsq)
+
+# 1114 less links in dataset.
+
+# Write out for each dataset 
+
+
+```
+```{r}
+## Apply to all dasets and write out in new link files to test.
+
+remove_concimittant <- function(dataset) {
+  filter(dataset, LinkType != "concurrent predation on symbionts")
+}
+
+bsq = read_csv("data/BSQweb_Links.csv")
+csm = read_csv("data/CSMweb_Links.csv")
+epb = read_csv("data/EPBweb_Links.csv")
+
+bsq_new_links = remove_concimittant(bsq)
+csm_new_links = remove_concimittant(csm)
+epb_new_links = remove_concimittant(epb)
+
+# Write
+write_csv(bsq_new_links, "data/BSQweb_New_Links.csv")
+write_csv(csm_new_links, "data/CSMweb_New_Links.csv")
+write_csv(epb_new_links, "data/EPBweb_New_Links.csv")
+
+
+```
+
+
+
+
+```{r}
+## Load in nodes and make sure that all nodes are still in the links?
+bsq_nodes = read_csv("data/BSQweb_Nodes__New.csv")
+
+```
+
